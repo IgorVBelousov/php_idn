@@ -61,9 +61,6 @@ function EncodePunycodeIDN( $value )
       return substr( $sub_result, 1 );
     }
 
-    $mb_internal_enc = mb_internal_encoding();
-    mb_internal_encoding( "UTF-8" );
-
     /* http://tools.ietf.org/html/rfc3492#section-6.3 */
     $n      = 0x80;
     $delta  = 0;
@@ -72,10 +69,10 @@ function EncodePunycodeIDN( $value )
 
     $input  = array();
     $str    = $value;
-    while ( mb_strlen( $str ) > 0 )
+    while ( mb_strlen( $str , 'UTF-8' ) > 0 )
       {
-        array_push( $input, mb_substr( $str, 0, 1 ) );
-        $str = mb_substr( $str, 1 );
+        array_push( $input, mb_substr( $str, 0, 1, 'UTF-8' ) );
+        $str = mb_substr( $str, 1, null, 'UTF-8' );
       } 
 
     /* basic symbols */
@@ -84,7 +81,6 @@ function EncodePunycodeIDN( $value )
 
     if ( $b == $input )
       {
-        mb_internal_encoding( $mb_internal_enc );
         return $value;
       }
     $b = count( $b );
@@ -114,7 +110,6 @@ function EncodePunycodeIDN( $value )
         }
       if ( ( $m - $n ) > ( 0x10FFFF / ( $h + 1 ) ) )
         {
-          mb_internal_encoding( $mb_internal_enc );
           return $value;
         }
       $delta += ( $m - $n ) * ( $h + 1 );
@@ -128,7 +123,6 @@ function EncodePunycodeIDN( $value )
               ++$delta;
               if ( $delta == 0 )
                 {
-                  mb_internal_encoding( $mb_internal_enc );
                   return $value;
                 }
             }
@@ -179,7 +173,6 @@ function EncodePunycodeIDN( $value )
       ++$delta;
       ++$n;
     }
-    mb_internal_encoding( $mb_internal_enc );
     return implode( '', $output );
   }
 
