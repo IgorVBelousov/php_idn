@@ -64,8 +64,6 @@ function EncodePunycodeIDN( $value )
     $mb_internal_enc = mb_internal_encoding();
     mb_internal_encoding( "UTF-8" );
 
-    $value = mb_strtolower( $value );
-
     /* http://tools.ietf.org/html/rfc3492#section-6.3 */
     $n      = 0x80;
     $delta  = 0;
@@ -162,7 +160,7 @@ function EncodePunycodeIDN( $value )
 
               $output[] = chr( ( $q + 22 + 75 * ( $q < 26 ) ) );
               /* http://tools.ietf.org/html/rfc3492#section-6.1 */
-              $delta = ( $h == $b )?$delta/700:$delta>>1;
+              $delta = ( $h == $b ) ? $delta / 700 : $delta>>1;
 
               $delta += intval( $delta / ( $h + 1 ) );
 
@@ -199,39 +197,39 @@ function EncodePunycodeIDN( $value )
 function DecodePunycodeIDN($value)
   {
     /* search subdomains */
-    $sub_domain = explode('.', $value);
-    if (count($sub_domain)>1){
-      $sub_result='';
-      foreach ($sub_domain as $sub_value) {
-        $sub_result .= '.'.DecodePunycodeIDN($sub_value);
+    $sub_domain = explode( '.', $value );
+    if ( count( $sub_domain ) > 1 ) {
+      $sub_result = '';
+      foreach ( $sub_domain as $sub_value ) {
+        $sub_result .= '.' . DecodePunycodeIDN( $sub_value );
       }
-      return substr($sub_result,1);
+      return substr( $sub_result, 1 );
     }
 
     /* search prefix */
-    if (substr($value,0,4)!='xn--')
+    if ( substr( $value, 0, 4 ) != 'xn--' )
       {
         return $value;
       }
     else
       {
-        $bad_input=$value;
-        $value=substr($value,4);
+        $bad_input = $value;
+        $value = substr( $value, 4 );
       }
 
-    $n  = 0x80;
-    $i = 0;
-    $bias  = 72;
+    $n      = 0x80;
+    $i      = 0;
+    $bias   = 72;
     $output = array();
 
     /* search delimeter */
-    $d = strrpos($value, '-');
+    $d = strrpos( $value, '-' );
 
-    if ($d > 0) {
+    if ( $d > 0 ) {
       for ( $j = 0; $j < $d; ++$j) {
-        $c = $value[$j];
-        $output[]=$c;
-        if ($c > 0x7F)
+        $c = $value[ $j ];
+        $output[] = $c;
+        if ( $c > 0x7F )
           {
             return $bad_input;
           }
@@ -241,38 +239,38 @@ function DecodePunycodeIDN($value)
       $d = 0;
     }
 
-    while ($d < strlen($value))
+    while ($d < strlen( $value ) )
       {
         $oldi = $i;
         $w = 1;
 
         for ($k = 36;; $k += 36)
           {
-            if ($d == strlen($value))
+            if ( $d == strlen( $value ) )
               {
                 return $bad_input;
               }
-            $c = $value[$d++];
-            $c=ord($c);
+            $c = $value[ $d++ ];
+            $c = ord( $c );
 
-            $digit=($c - 48 < 10) ? $c - 22 : 
+            $digit = ( $c - 48 < 10) ? $c - 22 :
               (
-                ($c - 65 < 26) ? $c - 65 : 
+                ( $c - 65 < 26 ) ? $c - 65 :
                   (
-                    ($c - 97 < 26) ? $c - 97 : 36
+                    ( $c - 97 < 26 ) ? $c - 97 : 36
                   )
               );
-            if ($digit > (0x10FFFF - $i) / $w)
+            if ( $digit > ( 0x10FFFF - $i ) / $w )
               {
                 return $bad_input;
               }
             $i += $digit * $w;
 
-            if ($k <= $bias)
+            if ( $k <= $bias )
               {
                 $t = 1;
               }
-            elseif ($k >= $bias + 26)
+            elseif ( $k >= $bias + 26 )
               {
                 $t = 26;
               }
@@ -280,41 +278,42 @@ function DecodePunycodeIDN($value)
               {
                 $t = $k - $bias;
               }
-            if ($digit < $t) {
+            if ( $digit < $t ) {
                 break;
               }
 
-            $w *= (36 - $t);
+            $w *= ( 36 - $t );
 
           }
 
         $delta = $i - $oldi;
 
         /* http://tools.ietf.org/html/rfc3492#section-6.1 */
-        $delta = ($oldi == 0)?$delta/700:$delta>>1;
+        $delta = ( $oldi == 0 ) ? $delta/700 : $delta>>1;
 
-        $count_output_plus_one=count($output)+1;
-        $delta += ($delta / ($count_output_plus_one+1));
+        $count_output_plus_one = count( $output ) + 1;
+        $delta += ( $delta / ( $count_output_plus_one + 1 ) );
 
         $k2 = 0;
-        while ($delta > 455)
+        while ( $delta > 455 )
           {
             $delta /= 35;
             $k2 += 36;
           }
-        $bias= intval($k2 + (36  * $delta) / ($delta + 38));
+        $bias = intval( $k2 + ( 36  * $delta ) / ( $delta + 38 ) );
         /* end section-6.1 */
-        if ($i / $count_output_plus_one > 0x10FFFF - $n)
+        if ( $i / $count_output_plus_one > 0x10FFFF - $n )
           {
             return $bad_input;
           }
-        $n += intval($i / $count_output_plus_one);
-        $i = intval($i % $count_output_plus_one);
-        array_splice($output, $i, 0, 
-            html_entity_decode('&#'.$n.';',ENT_NOQUOTES,'UTF-8')
+        $n += intval( $i / $count_output_plus_one );
+        $i = intval( $i % $count_output_plus_one );
+        array_splice( $output, $i, 0,
+            html_entity_decode( '&#' . $n . ';', ENT_NOQUOTES, 'UTF-8' )
          );
         ++$i;
       }
-    return implode('', $output);
+
+    return implode( '', $output );
   }
 
