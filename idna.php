@@ -45,7 +45,7 @@ function ordUTF8($c, $index = 0, &$bytes = null)
  * @return string Encoded Domain name
  *
  * @author Igor V Belousov <igor@belousovv.ru>
- * @copyright 2013 Igor V Belousov
+ * @copyright 2013, 2015 Igor V Belousov
  * @license http://opensource.org/licenses/LGPL-2.1 LGPL v2.1
  * @link http://belousovv.ru/myscript/phpIDN
  */
@@ -147,7 +147,7 @@ function EncodePunycodeIDN( $value )
                     {
                       break;
                     }
-                    $tmp_int = ( $t + ( ( $q - $t ) % ( 36 - $t ) ) );
+                    $tmp_int = $t + ( $q - $t ) % ( 36 - $t );
                   $output[] = chr( ( $tmp_int + 22 + 75 * ( $tmp_int < 26 ) ) );
                   $q = ( $q - $t ) / ( 36 - $t );
                 }
@@ -161,10 +161,10 @@ function EncodePunycodeIDN( $value )
               $k2 = 0;
               while ( $delta > 455 )
                 {
-                  $delta = intval( $delta / 35 );
+                  $delta /= 35;
                   $k2 += 36;
                 }
-              $bias= intval( $k2 + ( ( 36  * $delta ) / ( $delta + 38 ) ) );
+              $bias = intval( $k2 + 36 * $delta / ( $delta + 38 ) );
               /* end section-6.1 */              
               $delta = 0;
               ++$h;
@@ -183,11 +183,11 @@ function EncodePunycodeIDN( $value )
  * @return string Domain name in UTF-8 charset
  *
  * @author Igor V Belousov <igor@belousovv.ru>
- * @copyright 2013 Igor V Belousov
+ * @copyright 2013, 2015 Igor V Belousov
  * @license http://opensource.org/licenses/LGPL-2.1 LGPL v2.1
  * @link http://belousovv.ru/myscript/phpIDN
  */
-function DecodePunycodeIDN($value)
+function DecodePunycodeIDN( $value )
   {
     /* search subdomains */
     $sub_domain = explode( '.', $value );
@@ -234,7 +234,7 @@ function DecodePunycodeIDN($value)
 
     while ($d < strlen( $value ) )
       {
-        $oldi = $i;
+        $old_i = $i;
         $w = 1;
 
         for ($k = 36;; $k += 36)
@@ -246,7 +246,7 @@ function DecodePunycodeIDN($value)
             $c = $value[ $d++ ];
             $c = ord( $c );
 
-            $digit = ( $c - 48 < 10) ? $c - 22 :
+            $digit = ( $c - 48 < 10 ) ? $c - 22 :
               (
                 ( $c - 65 < 26 ) ? $c - 65 :
                   (
@@ -275,17 +275,17 @@ function DecodePunycodeIDN($value)
                 break;
               }
 
-            $w *= ( 36 - $t );
+            $w *= 36 - $t;
 
           }
 
-        $delta = $i - $oldi;
+        $delta = $i - $old_i;
 
         /* http://tools.ietf.org/html/rfc3492#section-6.1 */
-        $delta = ( $oldi == 0 ) ? $delta/700 : $delta>>1;
+        $delta = ( $old_i == 0 ) ? $delta/700 : $delta>>1;
 
         $count_output_plus_one = count( $output ) + 1;
-        $delta += ( $delta / ( $count_output_plus_one + 1 ) );
+        $delta += intval( $delta / $count_output_plus_one );
 
         $k2 = 0;
         while ( $delta > 455 )
@@ -293,14 +293,14 @@ function DecodePunycodeIDN($value)
             $delta /= 35;
             $k2 += 36;
           }
-        $bias = intval( $k2 + ( 36  * $delta ) / ( $delta + 38 ) );
+        $bias = intval( $k2 + 36  * $delta / ( $delta + 38 ) );
         /* end section-6.1 */
         if ( $i / $count_output_plus_one > 0x10FFFF - $n )
           {
             return $bad_input;
           }
         $n += intval( $i / $count_output_plus_one );
-        $i = intval( $i % $count_output_plus_one );
+        $i %= $count_output_plus_one;
         array_splice( $output, $i, 0,
             html_entity_decode( '&#' . $n . ';', ENT_NOQUOTES, 'UTF-8' )
          );
