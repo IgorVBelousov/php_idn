@@ -102,6 +102,8 @@ function EncodePunycodeIDN( $value )
     $input_len = count( $input );
     $h = $b;
 
+    $ord_input = array();
+
     while ( $h < $input_len ) {
       $m = 0x10FFFF;
       for ( $i = 0; $i < $input_len; ++$i )
@@ -158,16 +160,16 @@ function EncodePunycodeIDN( $value )
                   $q = ( $q - $t ) / ( 36 - $t );
                 }
 
-              $output[]= chr(($q + 22 + 75 * ($q < 26)));
+              $output[] = chr( ( $q + 22 + 75 * ( $q < 26 ) ) );
               /* http://tools.ietf.org/html/rfc3492#section-6.1 */
               $delta = ( $h == $b )?$delta/700:$delta>>1;
 
-              $delta += ( $delta / ( $h + 1 ) );
+              $delta += intval( $delta / ( $h + 1 ) );
 
               $k2 = 0;
               while ( $delta > 455 )
                 {
-                  $delta /= 35;
+                  $delta = intval( $delta / 35 );
                   $k2 += 36;
                 }
               $bias= intval( $k2 + ( ( 36  * $delta ) / ( $delta + 38 ) ) );
