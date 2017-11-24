@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit colors="true">
+
+    <testsuites>
+        <testsuite name="php_idn tests">
+            <file>Test.php</file>
+        </testsuite>
+    </testsuites>
+</phpunit>
