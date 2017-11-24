@@ -51,6 +51,10 @@ function ordUTF8($c, $index = 0, &$bytes = null)
  */
 function EncodePunycodeIDN( $value )
   {
+    if ( function_exists( 'idn_to_ascii' ) ) {
+      return idn_to_ascii( $value );
+    }
+
     /* search subdomains */
     $sub_domain = explode( '.', $value );
     if ( count( $sub_domain ) > 1 ) {
@@ -189,6 +193,10 @@ function EncodePunycodeIDN( $value )
  */
 function DecodePunycodeIDN( $value )
   {
+    if ( function_exists( 'idn_to_utf8' ) ) {
+      return idn_to_utf8( $value );
+    }
+
     /* search subdomains */
     $sub_domain = explode( '.', $value );
     if ( count( $sub_domain ) > 1 ) {
