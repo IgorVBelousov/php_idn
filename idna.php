@@ -72,8 +72,8 @@ function EncodePunycodeIDN( $value )
     while ( mb_strlen( $str , 'UTF-8' ) > 0 )
       {
         array_push( $input, mb_substr( $str, 0, 1, 'UTF-8' ) );
-        $str = mb_substr( $str, 1, null, 'UTF-8' );
-      } 
+        $str = (version_compare(PHP_VERSION, '5.4.8','<'))?mb_substr( $str, 1, mb_strlen($str, 'UTF-8') , 'UTF-8' ):mb_substr( $str, 1, null, 'UTF-8' );
+      }
 
     /* basic symbols */
     $basic = preg_grep( '/[\x00-\x7f]/', $input );
@@ -165,7 +165,7 @@ function EncodePunycodeIDN( $value )
                   $k2 += 36;
                 }
               $bias = intval( $k2 + 36 * $delta / ( $delta + 38 ) );
-              /* end section-6.1 */              
+              /* end section-6.1 */
               $delta = 0;
               ++$h;
             }
