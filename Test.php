@@ -93,8 +93,8 @@ class Test extends PHPUnit_Framework_TestCase
       ),
 
       array(
-        '세계의모든사람들이한국어를이해한다면얼마나좋을까',
-        'xn--989aomsvi5e83db1d2a355cv1e0vak1dwrv93d5xbh15a0dt30a5jpsd879ccm6fea98c',
+        '세계의모든사람들이한국어를이해한다면얼마',
+        'xn--989aomm9k97bua391bj7doral2cxop06c5qbv82akd53z7mad0915dea39b',
         '(H) Korean (Hangul syllables)'
       ),
 
@@ -105,32 +105,32 @@ class Test extends PHPUnit_Framework_TestCase
       ),
 
       array(
-        'PorquénopuedensimplementehablarenEspañol',
-        'xn--PorqunopuedensimplementehablarenEspaol-fmd56a',
+        'porquénopuedensimplementehablarenespañol',
+        'xn--porqunopuedensimplementehablarenespaol-fmd56a',
         '(J) Spanish'
       ),
 
       array(
-        'TạisaohọkhôngthểchỉnóitiếngViệt',
-        'xn--TisaohkhngthchnitingVit-kjcr8268qyxafd2f1b9g',
+        'tạisaohọkhôngthểchỉnóitiếngviệt',
+        'xn--tisaohkhngthchnitingvit-kjcr8268qyxafd2f1b9g',
         '(K) Vietnamese'
       ),
 
       array(
-        '3年B組金八先生',
-        'xn--3B-ww4c5e180e575a65lsy2b',
+        '3年b組金八先生',
+        'xn--3b-ww4c5e180e575a65lsy2b',
         '(L) 3<nen>B<gumi><kinpachi><sensei>'
       ),
 
       array(
-        '安室奈美恵-with-SUPER-MONKEYS',
-        'xn---with-SUPER-MONKEYS-pc58ag80a8qai00g7n9n',
+        '安室奈美恵-with-super-monkeys',
+        'xn---with-super-monkeys-pc58ag80a8qai00g7n9n',
         '(M) <amuro><namie>-with-SUPER-MONKEYS'
       ),
 
       array(
-        'Hello-Another-Way-それぞれの場所',
-        'xn--Hello-Another-Way--fc4qua05auwb3674vfr0b',
+        'hello-another-way-それぞれの場所',
+        'xn--hello-another-way--fc4qua05auwb3674vfr0b',
         '(N) Hello-Another-Way-<sorezore><no><basho>'
       ),
 
@@ -141,8 +141,8 @@ class Test extends PHPUnit_Framework_TestCase
       ),
 
       array(
-        'MajiでKoiする5秒前',
-        'xn--MajiKoi5-783gue6qz075azm5e',
+        'majiでkoiする5秒前',
+        'xn--majikoi5-783gue6qz075azm5e',
         '(P) Maji<de>Koi<suru>5<byou><mae>'
       ),
 
