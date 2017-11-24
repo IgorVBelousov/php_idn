@@ -93,8 +93,8 @@ class Test extends PHPUnit_Framework_TestCase
       ),
 
       array(
-        '세계의모든사람들이한국어를이해한다면얼마',
-        'xn--989aomm9k97bua391bj7doral2cxop06c5qbv82akd53z7mad0915dea39b',
+        '한국어',
+        'xn--3e0bk47br7k',
         '(H) Korean (Hangul syllables)'
       ),
 
